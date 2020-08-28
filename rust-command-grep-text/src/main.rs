@@ -9,7 +9,7 @@ pub fn match_param(matches: &ArgMatches) -> Config {
     let output_filename;
     if let Some(o) = matches.value_of("output_filename") {
         output_filename = String::from(o);
-        println!("Value for output_filename: {}", o);
+        // println!("Value for output_filename: {}", o);
     } else {
         output_filename = String::from("output.txt");
     }
@@ -17,10 +17,10 @@ pub fn match_param(matches: &ArgMatches) -> Config {
     let input_filename;
     if let Some(f) = matches.value_of("input_filename") {
         input_filename = String::from(f);
-        println!("Value for input_filename: {}", f);
+        // println!("Value for input_filename: {}", f);
     } else if Path::new("./input.txt").exists() {
         input_filename = String::from("input.txt");
-        println!("Use default input file: {}", input_filename);
+        // println!("Use default input file: {}", input_filename);
     } else {
         panic!("No input file found!");
     }
@@ -28,14 +28,14 @@ pub fn match_param(matches: &ArgMatches) -> Config {
     let keyword;
     if let Some(k) = matches.value_of("keyword") {
         keyword = String::from(k);
-        println!("Keyword for search: {}", k);
+        // println!("Keyword for search: {}", k);
     } else {
         panic!("No keyword!");
     }
 
-    let mut ignore_case;
+    let ignore_case;
     if matches.is_present("ignore_case") {
-        println!("Searching with case insensitive...");
+        // println!("Searching with case insensitive...");
         ignore_case = true;
     } else {
         ignore_case = false;
@@ -97,7 +97,7 @@ fn main() {
         .get_matches();
 
     if let Some(ref matches) = matches.subcommand_matches("lines") {
-        let mut config = match_param(&matches);
+        let config = match_param(&matches);
         let res = minigrep::run(config);
         println!("Number of lines found: {:?}", &res.len());
     } else if let Some(ref matches) = matches.subcommand_matches("matches") {
@@ -106,7 +106,7 @@ fn main() {
         let res = minigrep::run(config);
         println!("Number of matches found: {:?}", &res.len());
     } else {
-        let mut config = match_param(&matches);
+        let config = match_param(&matches);
         let res = minigrep::run(config);
         println!("{:?}", &res);
     }
