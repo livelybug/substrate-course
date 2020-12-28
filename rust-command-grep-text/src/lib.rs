@@ -14,17 +14,18 @@ pub struct Config {
 
 
 
-pub fn run(config:Config) -> Vec<String>{
+pub fn run(config: &mut Config) -> Vec<String>{
     let contents = fs::read_to_string(&config.input_filename).unwrap();
 
-    let res = search_(&config, &contents);
+    let res = search_(config, &contents);
     res
 }
 
-pub fn search_<'a>(config:&Config, contents:&'a str) -> Vec<String> {
-    let mut keyword = config.keyword.clone();
-    if * &config.ignore_case == true {
-        keyword = keyword.to_lowercase();
+pub fn search_<'a>(config:&mut Config, contents:&'a str) -> Vec<String> {
+    // let mut keyword= config.keyword;  // Todo: Remove clone?
+    if config.ignore_case == true {
+        // keyword = keyword.to_lowercase().as_str();
+        config.keyword = config.keyword.to_lowercase();
     }
 
     let mut res: Vec<String> = Vec::new();
@@ -39,11 +40,11 @@ pub fn search_<'a>(config:&Config, contents:&'a str) -> Vec<String> {
 
     for line in contents.lines() {
         let mut _line: String = String::from(line);
-        if * &config.ignore_case == true {
+        if * &config.ignore_case == true {  // Todo: How to move out of loop？
             _line = String::from(line.to_lowercase());
         }
 
-        if _line.contains(&keyword) {
+        if _line.contains(&config.keyword) {
             if * &config.match_count == false {
                 match file.write_all(format!("{}\n", line).as_bytes()) {
                     Err(why) => panic!("couldn't write to {}: {}", display, why),
@@ -52,7 +53,7 @@ pub fn search_<'a>(config:&Config, contents:&'a str) -> Vec<String> {
 
                 res.push(line.into());
             } else {
-                let v: Vec<String> = (&_line).matches(&keyword).map(|x| String::from(x)).collect();
+                let v: Vec<String> = (&_line).matches(&config.keyword).map(|x| String::from(x)).collect();
                 res.extend(v);
             }
         }

@@ -96,17 +96,16 @@ fn main() {
         .subcommand(sub_command_matches)
         .get_matches();
 
+    let config = &mut match_param(&matches);
+
     if let Some(ref matches) = matches.subcommand_matches("lines") {
-        let config = match_param(&matches);
         let res = minigrep::run(config);
         println!("Number of lines found: {:?}", &res.len());
     } else if let Some(ref matches) = matches.subcommand_matches("matches") {
-        let mut config = match_param(&matches);
         config.match_count = true;
         let res = minigrep::run(config);
         println!("Number of matches found: {:?}", &res.len());
     } else {
-        let config = match_param(&matches);
         let res = minigrep::run(config);
         println!("{:?}", &res);
     }
